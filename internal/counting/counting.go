@@ -160,7 +160,9 @@ func (cf *CountingFilter) Reset() {
 func (cf *CountingFilter) Data() []byte {
 	cf.mu.RLock()
 	defer cf.mu.RUnlock()
-	return cf.data
+	out := make([]byte, len(cf.data))
+	copy(out, cf.data)
+	return out
 }
 
 // Saturation returns the fraction of non-zero counters.
