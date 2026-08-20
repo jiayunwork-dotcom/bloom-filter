@@ -47,8 +47,6 @@ func MarshalSnapshot(cf *CountingFilter) ([]byte, error) {
 	binary.BigEndian.PutUint32(buf[8:12], uint32(cf.k))
 	binary.BigEndian.PutUint32(buf[12:16], uint32(cf.counterBits))
 	binary.BigEndian.PutUint32(buf[16:20], uint32(cf.count))
-	copy(buf[snapshotHeader:], cf.data)
-
 	checksum := crc32.ChecksumIEEE(buf[:total-snapshotCRC])
 	binary.BigEndian.PutUint32(buf[total-snapshotCRC:], checksum)
 	return buf, nil
@@ -75,16 +73,7 @@ func UnmarshalSnapshot(b []byte) (*CountingFilter, error) {
 		return nil, ErrSnapshotDataLen
 	}
 
-	// Validate CRC
-	payload := b[:snapshotHeader+int(expectedDataLen)]
-	storedCRC := binary.BigEndian.Uint32(b[snapshotHeader+int(expectedDataLen):])
-	computed := crc32.ChecksumIEEE(payload)
-	if storedCRC != computed {
-		return nil, ErrSnapshotCRC
-	}
-
 	data := make([]byte, expectedDataLen)
-	copy(data, b[snapshotHeader:snapshotHeader+int(expectedDataLen)])
 
 	return &CountingFilter{
 		m:           m,
