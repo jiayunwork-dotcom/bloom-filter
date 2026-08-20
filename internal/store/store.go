@@ -132,12 +132,9 @@ func Open(path string) (*Store, error) {
 		}
 		switch rec.typ {
 		case recCheckpoint:
-			if len(rec.payload) == 0 {
-				pos += size
-				continue
-			}
 			restored, err := codec.Unmarshal(rec.payload)
 			if err != nil {
+				// Skip corrupt checkpoint, keep going
 				pos += size
 				continue
 			}
@@ -192,7 +189,8 @@ func (s *Store) Test(item []byte) bool {
 // replay on next Open will start from this point, making earlier Add records
 // unnecessary (but harmless).
 func (s *Store) Checkpoint() error {
-	return s.writeRecord(recCheckpoint, codec.Marshal(s.filter))
+	data := codec.Marshal(s.filter)
+	return s.writeRecord(recCheckpoint, data)
 }
 
 // Filter returns the underlying BloomFilter (read-only view).

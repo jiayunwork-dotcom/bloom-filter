@@ -46,7 +46,20 @@ func Marshal(f *filter.BloomFilter) []byte {
 	if f == nil {
 		return nil
 	}
-	return []byte{}
+	bits := f.Bits()
+	total := headerSizeV2 + len(bits) + trailerV2
+	out := make([]byte, total)
+
+	binary.BigEndian.PutUint32(out[0:4], magicV2)
+	out[4] = 2 // version
+	binary.BigEndian.PutUint32(out[5:9], uint32(f.M()))
+	binary.BigEndian.PutUint32(out[9:13], uint32(f.K()))
+	copy(out[13:], bits)
+
+	// CRC32 over everything except the trailing 4 bytes
+	checksum := crc32.ChecksumIEEE(out[:total-trailerV2])
+	binary.BigEndian.PutUint32(out[total-trailerV2:], checksum)
+	return out
 }
 
 // MarshalV1 serializes a BloomFilter to the legacy v1 wire format (no CRC):
