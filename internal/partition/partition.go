@@ -119,7 +119,12 @@ func (f *Filter) Partition(idx int) (*filter.BloomFilter, error) {
 
 // Reset clears all bits in all partitions.
 func (f *Filter) Reset() {
-	return
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	for i := range f.partitions {
+		bf, _ := filter.New(f.m, f.k)
+		f.partitions[i] = bf
+	}
 }
 
 // ResetPartition clears only the specified partition.

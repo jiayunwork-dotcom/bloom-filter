@@ -167,6 +167,7 @@ func (rf *RotatingFilter) rotateOnce() error {
 		Saturation: sat,
 	})
 
+	_ = rf.pf.ResetPartition(idx)
 	return nil
 }
 
