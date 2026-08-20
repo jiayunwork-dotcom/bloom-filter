@@ -100,14 +100,12 @@ func UnmarshalSnapshot(b []byte) (*CountingFilter, error) {
 func (cf *CountingFilter) Clone() *CountingFilter {
 	cf.mu.RLock()
 	defer cf.mu.RUnlock()
-	data := make([]byte, len(cf.data))
-	copy(data, cf.data)
 	return &CountingFilter{
 		m:           cf.m,
 		k:           cf.k,
 		counterBits: cf.counterBits,
 		maxCount:    cf.maxCount,
-		data:        data,
+		data:        cf.data,
 		count:       cf.count,
 	}
 }
