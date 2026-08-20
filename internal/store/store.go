@@ -166,6 +166,10 @@ func Open(path string) (*Store, error) {
 		f.Close()
 		return nil, err
 	}
+	if err := f.Truncate(int64(pos)); err != nil {
+		f.Close()
+		return nil, err
+	}
 
 	return &Store{path: path, f: f, filter: bf, k: k}, nil
 }
@@ -239,10 +243,7 @@ func parseRecord(data []byte) (record, int, bool) {
 	pLen := int(binary.BigEndian.Uint32(data[1:5]))
 	total := recHeaderSize + pLen + recCRCSize
 	if len(data) < total {
-		remain := data[recHeaderSize:]
-		payload := make([]byte, len(remain))
-		copy(payload, remain)
-		return record{typ: typ, payload: payload}, len(data), true
+		return record{}, 0, false
 	}
 	// Validate CRC
 	stored := binary.BigEndian.Uint32(data[recHeaderSize+pLen : total])
