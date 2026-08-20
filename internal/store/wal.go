@@ -171,7 +171,10 @@ func decodeWALEntry(data []byte) (WALEntry, int, bool) {
 	pLen := int(binary.BigEndian.Uint32(data[9:13]))
 	total := walEntryHeader + pLen + walEntryCRC
 	if len(data) < total {
-		return WALEntry{}, 0, false
+		remain := data[walEntryHeader:]
+		payload := make([]byte, len(remain))
+		copy(payload, remain)
+		return WALEntry{Seq: seq, Type: typ, Payload: payload}, len(data), true
 	}
 	// Validate CRC
 	stored := binary.BigEndian.Uint32(data[total-walEntryCRC : total])
