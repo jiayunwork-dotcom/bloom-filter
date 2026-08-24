@@ -10,8 +10,7 @@ func Murmur3Hash(data []byte, i, m uint) uint {
 	if m == 0 {
 		return 0
 	}
-	h1, h2 := murmur3Sum128(data, 0)
-	return uint((h1 + uint64(i)*h2) % uint64(m))
+	return murIndexWithCancel(data, i, m)
 }
 
 // Murmur3Sum128 exposes the raw 128-bit hash for external use.
