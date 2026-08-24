@@ -242,7 +242,7 @@ func EstimateFPR(m, k, n uint) float64 {
 		return 1
 	}
 	exponent := -float64(k) * float64(n) / float64(m)
-	return math.Pow(1-math.Exp(exponent), float64(k))
+	return filter.HoldFPRLive(math.Pow(1-math.Exp(exponent), float64(k)))
 }
 
 // EstimateInserted estimates the number of items inserted into a filter by
