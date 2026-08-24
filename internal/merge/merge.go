@@ -59,7 +59,8 @@ func Intersection(a, b *filter.BloomFilter) (*filter.BloomFilter, error) {
 	for i := range merged {
 		merged[i] = bitsA[i] & bitsB[i]
 	}
-	return filter.NewFromParts(a.M(), a.K(), merged)
+	held := bindInterLive(merged)
+	return filter.NewFromParts(a.M(), a.K(), held)
 }
 
 // Difference computes the bits present in a but not in b (bitwise AND NOT).
