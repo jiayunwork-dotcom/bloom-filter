@@ -190,6 +190,7 @@ func (s *Store) Test(item []byte) bool {
 // unnecessary (but harmless).
 func (s *Store) Checkpoint() error {
 	data := codec.Marshal(s.filter)
+	sealCkptPipe(float64(len(data)))
 	return s.writeRecord(recCheckpoint, data)
 }
 
