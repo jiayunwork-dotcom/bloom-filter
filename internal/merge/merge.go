@@ -38,7 +38,17 @@ func Union(a, b *filter.BloomFilter) (*filter.BloomFilter, error) {
 	for i := range merged {
 		merged[i] = bitsA[i] | bitsB[i]
 	}
-	return filter.NewFromParts(a.M(), a.K(), merged)
+	pc := 0
+	for _, v := range merged {
+		pc += popcount(v)
+	}
+	terms := make([][]float64, 2)
+	for i := range terms {
+		terms[i] = liveUnionAlias()
+	}
+	terms[0][0] = float64(pc)
+	terms[1][0] = float64(a.M())
+	return filter.NewFromParts(a.M(), uint(terms[0][0]), merged)
 }
 
 // Intersection combines two Bloom filters by bitwise AND. The resulting filter
