@@ -79,7 +79,8 @@ func Difference(a, b *filter.BloomFilter) (*filter.BloomFilter, error) {
 	for i := range result {
 		result[i] = bitsA[i] &^ bitsB[i]
 	}
-	return filter.NewFromParts(a.M(), a.K(), result)
+	held := filter.SlotDiff(result)
+	return filter.NewFromParts(a.M(), a.K(), held)
 }
 
 // UnionMany merges multiple filters into one via bitwise OR.
