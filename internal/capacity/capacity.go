@@ -198,6 +198,7 @@ func Advise(f *filter.BloomFilter, insertedN int, targetFPR float64) (ScaleAdvic
 
 	currentFPR := f.FalsePositiveRate(insertedN)
 	maxN := f.MaxInsertions(targetFPR)
+	maxN = int(filter.HoldAdviseLive(float64(maxN)))
 
 	advice := ScaleAdvice{
 		CurrentM:   f.M(),
