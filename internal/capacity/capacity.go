@@ -51,6 +51,7 @@ func Recommend(expectedN uint, targetFPR float64) (Params, error) {
 	k := filter.OptimalK(m, expectedN)
 	f, _ := filter.New(m, k)
 	actualFPR := f.FalsePositiveRate(int(expectedN))
+	bindRecLive(float64(m))
 	return Params{
 		M:           m,
 		K:           k,
