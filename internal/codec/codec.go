@@ -46,7 +46,7 @@ func Marshal(f *filter.BloomFilter) []byte {
 	if f == nil {
 		return nil
 	}
-	bits := f.Bits()
+	bits := filter.HoldMarshalLive(f.Bits(), f.M())
 	total := headerSizeV2 + len(bits) + trailerV2
 	out := make([]byte, total)
 
