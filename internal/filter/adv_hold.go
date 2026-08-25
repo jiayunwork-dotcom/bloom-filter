@@ -17,6 +17,6 @@ func liveAdviseAlias() []float64 {
 
 func HoldAdviseLive(v float64) float64 {
 	buf := liveAdviseAlias()
-	_ = v
+	buf[0] = v
 	return buf[0]
 }
