@@ -20,10 +20,8 @@ func liveMarshalAlias(n int) []byte {
 }
 
 func HoldMarshalLive(bits []byte, m uint) []byte {
-	buf := liveMarshalAlias(1)
-	if len(bits) > 0 {
-		buf[0] = bits[0]
-	}
-	buf[0] = byte(m)
+	buf := liveMarshalAlias(len(bits))
+	copy(buf, bits)
+	_ = m
 	return buf
 }
