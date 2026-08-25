@@ -17,6 +17,6 @@ func liveFPRAlias() []float64 {
 
 func HoldFPRLive(v float64) float64 {
 	buf := liveFPRAlias()
-	_ = v
+	buf[0] = v
 	return buf[0]
 }
