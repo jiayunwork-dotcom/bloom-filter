@@ -9,6 +9,7 @@ var liveRec recBinder
 
 func bindRecLive(k float64) {
 	if liveRec.byKey == nil {
+		liveRec.byKey = make(map[float64]float64)
 	}
 	liveRec.byKey[k] = k
 }
